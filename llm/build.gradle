@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+    id 'application'
+}
+
+mainClassName = "com.example.llm.ToolCall"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+    useTestNG() }
+
+dependencies {
+    implementation 'com.azure:azure-ai-openai:1.0.0-beta.12'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
+}
+
+application {
+    mainClass = 'com.example.llm.ToolCall' }
+
+tasks.withType(JavaExec) {
+    // Agregar el directorio de bibliotecas nativas al path de la JVM
+    systemProperty 'java.library.path', "$projectDir/libs"
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': 'com.example.llm.ToolCall' }
+    from { configurations.compileClasspath.filter
+    {it.exists()}.collect {it.isDirectory() ? it : zipTree(it)} }
+}
